@@ -9,13 +9,22 @@ Perrin Academy
 
 Some tutorials to do with brain imaging and statistics.
 
-Contents:
+General statistics
+==================
 
 .. toctree::
    :maxdepth: 2
 
    glm_intro
    exploring_r_formula
+   ioannidis_2005
+
+More specific to imaging
+========================
+
+.. toctree::
+   :maxdepth: 2
+
    random_fields
 
 Indices and tables
