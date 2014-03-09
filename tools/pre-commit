@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+# Thanks to http://tech.yipit.com/2011/11/16/183772396/
+# Put into git with (from base directory):
+# ln -s ../../tools/pre-commit .git/hooks
+from __future__ import print_function, absolute_import
+
+import sys
+from os.path import join as pjoin
+from subprocess import check_call, call, PIPE
+
+def main():
+    # Stash any changes to the working tree that are not going to be committed
+    check_call(['git', 'stash', '-u', '--keep-index'], stdout=PIPE)
+    # Run checks
+    code = call(['python', pjoin('tools', 'all_ipynb_cleared.py'), '.'])
+    # Unstash changes to the working tree that we had stashed
+    check_call(['git', 'reset', '--hard'], stdout=PIPE, stderr=PIPE)
+    check_call(['git', 'stash', 'pop', '--quiet', '--index'],
+               stdout=PIPE, stderr=PIPE)
+    sys.exit(code)
+
+
+if __name__ == '__main__':
+    main()
