@@ -35,7 +35,9 @@ def main():
                         help='directory from which to search')
     args = parser.parse_args()
     for dirpath, dirnames, filenames in os.walk(args.searchpath):
-        dirnames[:] = [d for d in dirnames if not d.startswith('.')]
+        # Omit directories beginning with dots and underscores
+        dirnames[:] = [d for d in dirnames
+                       if not d.startswith('.') and not d.startswith('_')]
         for fname in filenames:
             if fname.startswith('.'):
                 continue

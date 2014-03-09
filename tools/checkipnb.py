@@ -82,6 +82,7 @@ def run_notebook(nb):
                 print('-----')
                 print("raised:")
                 print('\n'.join(reply['traceback']))
+            print(cell)
             cells += 1
             sys.stdout.write('.')
 

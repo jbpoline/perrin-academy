@@ -35,12 +35,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import os
 import glob
 import io
+import shutil
+
 from sphinx.util.compat import Directive
 from docutils import nodes
+from docutils.parsers.rst import directives
 from IPython.nbconvert import html, python
 from runipy.notebook_runner import NotebookRunner
 
 from IPython.nbformat import current
+
+# Tell notebook runner how to handle SVG
+NotebookRunner.MIME_MAP['image/svg+xml'] = 'svg'
+
 
 def cellgen(nb, type=None):
     for ws in nb.worksheets:
@@ -66,6 +73,7 @@ class NotebookDirective(Directive):
     """
     required_arguments = 1
     optional_arguments = 0
+    option_spec = {'otherfiles': directives.unchanged}
     final_argument_whitespace = True
 
     def run(self):
@@ -75,6 +83,12 @@ class NotebookDirective(Directive):
             raise ValueError(
                 "Cannot have spaces in notebook file name '{0}'".format(
                     nb_path))
+        # Get other files to copy to build directory
+        otherfiles = self.options.get('otherfiles', '')
+        if otherfiles == '':
+            otherfiles = []
+        else:
+            otherfiles = [fn.strip() for fn in otherfiles.split(',')]
         # check if raw html is supported
         if not self.state.document.settings.raw_enabled:
             raise self.warning('"%s" directive disabled.' % self.name)
@@ -99,6 +113,9 @@ class NotebookDirective(Directive):
         clear_output(nb)
         with io.open(dest_path, 'w') as f:
             current.write(nb, f, 'ipynb')
+        # Copy any other needed files
+        for fn in otherfiles:
+            shutil.copy2(fn, dest_dir)
 
         dest_path_eval = dest_path.replace('.ipynb', '_evaluated.ipynb')
         dest_path_script = dest_path.replace('.ipynb', '.py')
@@ -111,9 +128,8 @@ class NotebookDirective(Directive):
 
         try:
             evaluated_text = evaluate_notebook(nb_abs_path, dest_path_eval)
-        except:
-            # bail
-            return []
+        except Exception as err:
+            raise RuntimeError("{0} in notebook {1}".format(err, nb_path))
 
         # Create link to notebook and script files
         link_rst = "(" + \
@@ -192,11 +208,10 @@ def nb_to_html(nb_path):
     lines.append('</div>')
     return '\n'.join(lines)
 
+
 def evaluate_notebook(nb_path, dest_path=None):
     # Create evaluated version and save it to the dest path.
-    # Always use --pylab so figures appear inline
-    # perhaps this is questionable?
-    nb_runner = NotebookRunner(nb_in=nb_path, pylab=True)
+    nb_runner = NotebookRunner(nb_in=nb_path)
     nb_runner.run_notebook()
     if dest_path is None:
         dest_path = 'temp_evaluated.ipynb'

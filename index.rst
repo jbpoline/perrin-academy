@@ -15,6 +15,7 @@ Contents:
    :maxdepth: 2
 
    glm_intro
+   random_fields
 
 Indices and tables
 ==================
