@@ -5,6 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
+BUILDDIR      = _build
 
 # Specific stuff for website upload
 WWW = dynevoro@dynevor.org:public_html/perrin
