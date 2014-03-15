@@ -33,6 +33,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 import os
+from os.path import basename
 import glob
 import io
 import shutil
@@ -131,15 +132,6 @@ class NotebookDirective(Directive):
         except Exception as err:
             raise RuntimeError("{0} in notebook {1}".format(err, nb_path))
 
-        # Create link to notebook and script files
-        link_rst = "(" + \
-                   formatted_link(dest_path) + "; " + \
-                   formatted_link(dest_path_eval) + "; " + \
-                   formatted_link(dest_path_script) + \
-                   ")"
-
-        self.state_machine.insert_input([link_rst], rst_file)
-
         # create notebook node
         attributes = {'format': 'html', 'source': 'nb_path'}
         nb_node = notebook_node('', evaluated_text, **attributes)
@@ -156,7 +148,25 @@ class NotebookDirective(Directive):
         for file in png_files:
             os.remove(file)
 
-        return [nb_node]
+        # Put links underneath notebook
+        para = nodes.paragraph('', '')
+        new_nodes = []
+        for fname in (dest_path, dest_path_eval, dest_path_script):
+            fn = basename(fname)
+            new_nodes.append(nodes.reference('', fn, refuri = fn))
+        # Separate with separator
+        para.extend(list_join(nodes.Text('; '), new_nodes))
+        return [nb_node] + [para]
+
+
+def list_join(spacer, in_list):
+    new_list = []
+    last_i = len(in_list) - 1
+    for i, val in enumerate(in_list):
+        new_list.append(val)
+        if i != last_i:
+            new_list.append(spacer)
+    return new_list
 
 
 class notebook_node(nodes.raw):
@@ -229,6 +239,7 @@ def visit_notebook_node(self, node):
 
 def depart_notebook_node(self, node):
     self.depart_raw(node)
+
 
 def setup(app):
     setup.app = app
