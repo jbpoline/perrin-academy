@@ -243,7 +243,8 @@ def evaluate_notebook(nb_path, dest_path=None):
 
 
 def formatted_link(path):
-    return "`%s <%s>`__" % (os.path.basename(path), path)
+    base = os.path.basename(path)
+    return ":download:`%s`" % (base,)
 
 
 def visit_notebook_node(self, node):
