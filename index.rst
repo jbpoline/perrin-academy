@@ -26,10 +26,3 @@ More specific to imaging
    :maxdepth: 2
 
    random_fields
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
