@@ -46,7 +46,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'perrin-academy'
-copyright = u'2009, 2010 - Matthew Brett'
+copyright = u'2009, 2015 - Matthew Brett'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -167,7 +167,7 @@ html_static_path = ['_static']
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'perrin-academydoc'
+htmlhelp_basename = 'perrin-academy'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -181,7 +181,7 @@ htmlhelp_basename = 'perrin-academydoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'perrin-academy.tex', u'perrin-academy Documentation',
+  ('index', 'perrin-academy.tex', u'Perrin Academy',
    u'Matthew Brett', 'manual'),
 ]
 
