@@ -26,6 +26,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.doctest',
               'sphinx.ext.mathjax',
               'notebook_sphinxext',
+              'plot_directive',
               'math_dollar']
 
 # Add custom style for references
