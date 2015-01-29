@@ -34,6 +34,7 @@ help:
 
 clean:
 	-rm -rf _build/*
+	python ./tools/clear_all_ipynb.py .
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) _build/html
