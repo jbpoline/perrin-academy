@@ -201,3 +201,7 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+# Config of plot_directive
+plot_include_source = True
+plot_html_show_source_link = False
