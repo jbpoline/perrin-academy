@@ -178,8 +178,13 @@ def nb_to_python(nb_path):
     output, resources = exporter.from_filename(nb_path)
     return output
 
+
 def nb_to_html(nb_path):
-    """convert notebook to html"""
+    """convert notebook to html
+
+    This html will get embedded in another html page, so we need to strip out
+    stuff that would interfere with the parent page's formatting.
+    """
     exporter = html.HTMLExporter(template_file='full')
     output, resources = exporter.from_filename(nb_path)
     header = output.split('<head>', 1)[1].split('</head>',1)[0]
@@ -210,7 +215,12 @@ def nb_to_html(nb_path):
         '\nh2 small{font-size:16.25px;}\nh3 small{font-size:13px;}'
         '\nh4 small{font-size:13px;}', '')
     header = header.replace('background-color:#ffffff;', '', 1)
-
+    # Script to force mathjax refresh - from nbviewer output
+    header += (
+"""<script type="text/javascript">
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+</script>
+""")
     # concatenate raw html lines
     lines = ['<div class="ipynotebook">']
     lines.append(header)
@@ -231,11 +241,14 @@ def evaluate_notebook(nb_path, dest_path=None):
         os.remove(dest_path)
     return ret
 
+
 def formatted_link(path):
     return "`%s <%s>`__" % (os.path.basename(path), path)
 
+
 def visit_notebook_node(self, node):
     self.visit_raw(node)
+
 
 def depart_notebook_node(self, node):
     self.depart_raw(node)
