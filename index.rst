@@ -25,4 +25,5 @@ More specific to imaging
 .. toctree::
    :maxdepth: 2
 
+   smoothing_intro
    random_fields
