@@ -228,7 +228,7 @@ is of Gaussian shape, and of FWHM of say 10mm, then this signal will best be
 detected after we have smoothed our images with a 10mm FWHM Gaussian
 filter.The next few images show the matched filter theorem in action. First we
 can generate a simulated signal in a one dimensional set of data, by creating
-a Gaussian with FWHM 8 pixels, centred over the 14th data point:
+a Gaussian with FWHM 8 pixels, centered over the 14th data point:
 
 .. plot::
     :context: close-figs
