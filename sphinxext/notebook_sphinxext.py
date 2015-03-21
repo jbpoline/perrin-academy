@@ -50,6 +50,31 @@ from IPython.nbformat import current
 NotebookRunner.MIME_MAP['image/svg+xml'] = 'svg'
 
 
+MATHJAX_REFRESH = """\
+<script type="text/javascript">
+   init_mathjax = function() {
+     if (window.MathJax) {
+       // MathJax loaded
+       MathJax.Hub.Config({
+         tex2jax: {
+           inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+           displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+           processEscapes: true,
+           processEnvironments: true
+         },
+         displayAlign: 'center',
+         "HTML-CSS": {
+           styles: {'.MathJax_Display': {"margin": 0}},
+           linebreaks: { automatic: true }
+         }
+       });
+       MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+     }
+   }
+   init_mathjax();
+</script>
+"""
+
 def cellgen(nb, type=None):
     for ws in nb.worksheets:
         for cell in ws.cells:
@@ -216,11 +241,7 @@ def nb_to_html(nb_path):
         '\nh4 small{font-size:13px;}', '')
     header = header.replace('background-color:#ffffff;', '', 1)
     # Script to force mathjax refresh - from nbviewer output
-    header += (
-"""<script type="text/javascript">
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-</script>
-""")
+    header += MATHJAX_REFRESH
     # concatenate raw html lines
     lines = ['<div class="ipynotebook">']
     lines.append(header)
