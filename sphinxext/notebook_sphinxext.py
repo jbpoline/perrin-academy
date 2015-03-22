@@ -52,16 +52,8 @@ NotebookRunner.MIME_MAP['image/svg+xml'] = 'svg'
 
 MATHJAX_REFRESH = """\
 <script type="text/javascript">
-   init_mathjax = function() {
-     if (window.MathJax) {
-       // MathJax loaded
+   window.onload = function() {
        MathJax.Hub.Config({
-         tex2jax: {
-           inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-           displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-           processEscapes: true,
-           processEnvironments: true
-         },
          displayAlign: 'center',
          "HTML-CSS": {
            styles: {'.MathJax_Display': {"margin": 0}},
@@ -70,8 +62,6 @@ MATHJAX_REFRESH = """\
        });
        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
      }
-   }
-   init_mathjax();
 </script>
 """
 
