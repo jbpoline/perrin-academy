@@ -37,6 +37,7 @@ from os.path import basename
 import glob
 import io
 import shutil
+import re
 
 from sphinx.util.compat import Directive
 from docutils import nodes
@@ -49,21 +50,10 @@ from IPython.nbformat import current
 # Tell notebook runner how to handle SVG
 NotebookRunner.MIME_MAP['image/svg+xml'] = 'svg'
 
-
-MATHJAX_REFRESH = """\
-<script type="text/javascript">
-   window.onload = function() {
-       MathJax.Hub.Config({
-         displayAlign: 'center',
-         "HTML-CSS": {
-           styles: {'.MathJax_Display': {"margin": 0}},
-           linebreaks: { automatic: true }
-         }
-       });
-       MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-     }
-</script>
-"""
+# regexp for removing mathjax configuration from generated html
+# We put our own mathjax configuration in the header with templates
+mathjax_config = re.compile(r'<!-- Loading mathjax macro -->.*?'
+                            '<!-- End of mathjax configuration -->', re.S)
 
 def cellgen(nb, type=None):
     for ws in nb.worksheets:
@@ -230,8 +220,8 @@ def nb_to_html(nb_path):
         '\nh2 small{font-size:16.25px;}\nh3 small{font-size:13px;}'
         '\nh4 small{font-size:13px;}', '')
     header = header.replace('background-color:#ffffff;', '', 1)
-    # Script to force mathjax refresh - from nbviewer output
-    header += MATHJAX_REFRESH
+    # Remove mathjax configuration
+    header = mathjax_config.sub('', header)
     # concatenate raw html lines
     lines = ['<div class="ipynotebook">']
     lines.append(header)
